@@ -157,6 +157,7 @@ public:
     bool isCovered() { return m_coveredCache[m_currentFirstVisibleFloor] == 1; };
 
     void analyzeThing(const ThingPtr& thing, bool add);
+    bool blockLight();
 
 private:
     struct CountFlag {
