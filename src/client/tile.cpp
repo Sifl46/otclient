@@ -938,4 +938,5 @@ bool Tile::canRender(const bool drawViewportEdge, const Position& cameraPosition
 
 bool Tile::blockLight()
 {
+    return false;
 }
