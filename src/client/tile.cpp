@@ -41,7 +41,7 @@ Tile::Tile(const Position& position) :
     m_flags(0),
     m_houseId(0)
 {
-    for(auto dir : { Otc::North, Otc::West, Otc::South, Otc::East }) {
+    for(auto dir : { Otc::North, Otc::West, Otc::South, Otc::East, Otc::SouthEast }) {
         auto pos = position;
         m_positionsBorder.push_back(std::make_pair(dir, pos.translatedToDirection(dir)));
     }
@@ -54,8 +54,6 @@ Tile::Tile(const Position& position) :
 void Tile::onAddVisibleTileList(const MapViewPtr& /*mapView*/)
 {
     m_borderDirections.clear();
-
-    const bool isOnlyGround = hasGround() && !hasBottomOrTopToDraw();
 
     if(m_position == Position(1290, 985, 5)) {
         if(true);
@@ -857,7 +855,7 @@ void Tile::analyzeThing(const ThingPtr& thing, bool add)
     if(thing->isOnBottom() && thing->getWidth() > 1 && thing->getHeight() > 1 && thing->isNotMoveable() && thing->isNotWalkable())
         m_countFlag.hasWall += value;
 
-    if(thing->isOnBottom() && thing->isNotMoveable() && !thing->isNotWalkable())
+    if(thing->isOnBottom() && thing->isNotMoveable() && !thing->isNotWalkable() && !thing->hasLensHelp())
         m_countFlag.hasWallWalkable += value;
 
     if(thing->isNotWalkable())

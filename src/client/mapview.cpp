@@ -153,6 +153,10 @@ void MapView::drawFloor()
                 if(nextFloor >= m_floorMin) {
                     lightView->setFloor(nextFloor);
                     for(const auto& tile : m_cachedVisibleTiles[nextFloor].allGrounds) {
+                        if(tile->getPosition() == Position(135, 353, 5)) {
+                            if(true);
+                        }
+
                         const auto& ground = tile->getGround();
                         if(ground && ground->isTopGround()) {
                             auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
@@ -171,10 +175,10 @@ void MapView::drawFloor()
                             pos2D -= m_tileSize;
                             lightView->setShade(pos2D);
                         } else if(tile->isBorder() && (tile->hasWall() || tile->hasWallWalkable())) {
-                            uint8_t clear = 2;
+                            uint8_t clear = 3;
 
                             if(tile->hasWall()) {
-                                for(const auto pos : tile->getPosition().translatedToDirectionsEx({ Otc::South, Otc::East })) {
+                                for(const auto pos : tile->getPosition().translatedToDirectionsEx({ Otc::South, Otc::East, Otc::SouthEast })) {
                                     if(const auto& nextDownTile = g_map.getTile(pos)) {
                                         if(nextDownTile->isFullyOpaque() && !nextDownTile->hasWallWalkable() || nextDownTile->isTopGround()) {
                                             --clear;
