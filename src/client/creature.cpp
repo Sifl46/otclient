@@ -71,12 +71,12 @@ Creature::Creature() : Thing()
     m_mountShader = g_shaders.getDefaultMountShader();
 }
 
-void Creature::draw(const Point& dest, float scaleFactor, bool animate, const Highlight& highLight, TextureType textureType, Color color, int frameFlags, LightView* lightView)
+void Creature::draw(const Point& dest, float scaleFactor, bool animate, const Highlight& highLight, TextureType textureType, Color color, bool isCovered, LightView* lightView)
 {
     if(!canBeSeen())
         return;
 
-    if(frameFlags & Otc::FUpdateThing) {
+    if(!isCovered) {
         if(m_showTimedSquare) {
             g_drawPool.addBoundingRect(Rect(dest + (m_walkOffset - getDisplacement() + 2) * scaleFactor, Size(28 * scaleFactor)), m_timedSquareColor, std::max<int>(static_cast<int>(2 * scaleFactor), 1));
         }
@@ -92,7 +92,7 @@ void Creature::draw(const Point& dest, float scaleFactor, bool animate, const Hi
         }
     }
 
-    if(lightView && frameFlags & Otc::FUpdateLight) {
+    if(lightView) {
         auto light = getLight();
 
         if(isLocalPlayer() && (g_map.getLight().intensity < 64 || m_position.z > Otc::SEA_FLOOR)) {
@@ -104,7 +104,8 @@ void Creature::draw(const Point& dest, float scaleFactor, bool animate, const Hi
             }
         }
 
-        if(light.intensity > 0) {
+        const uint8 minIntensity = isCovered ? 2 : 0;
+        if(light.intensity > minIntensity) {
             lightView->addLightSource(dest + (m_walkOffset + (Point(Otc::TILE_PIXELS / 1.8))) * scaleFactor, light);
         }
     }

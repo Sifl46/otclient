@@ -52,17 +52,6 @@ namespace Otc
         OPERATION_ADD, OPERATION_REMOVE, OPERATION_CLEAN
     };
 
-    enum FrameUpdate : uint32 {
-        FUpdateThing = 1 << 0,
-        FUpdateLight = 1 << 1,
-        FUpdateStaticText = 1 << 2,
-        FUpdateCreatureInformation = 1 << 3,
-        FupdateCreature = FUpdateThing | FUpdateCreatureInformation,
-        FUpdateTextInformation = FUpdateStaticText | FUpdateCreatureInformation,
-
-        FUpdateAll = FUpdateThing | FUpdateLight | FUpdateStaticText | FUpdateCreatureInformation
-    };
-
     enum DrawFlags : uint32 {
         DrawGround = 1,
         DrawGroundBorders = 2,

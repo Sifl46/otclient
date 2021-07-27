@@ -89,6 +89,11 @@ void LightView::addLightSource(const Point& pos, const Light& light)
 {
     if(!isDark()) return;
 
+    float brightness = light.brightness;
+    if(brightness == 1.f) {
+        brightness = .2f + (light.intensity * 0.1);
+    }
+
     const uint16 radius = light.intensity * Otc::TILE_PIXELS * m_mapView->m_scaleFactor;
 
     auto& lights = m_lights[m_currentFloor];
@@ -100,7 +105,7 @@ void LightView::addLightSource(const Point& pos, const Light& light)
         }
     }
 
-    lights.push_back(LightSource{ pos , light.color, radius, light.brightness });
+    lights.push_back(LightSource{ pos , light.color, radius, brightness });
 }
 
 void LightView::setShade(const Point& point, bool islarge, const std::vector<Otc::Direction> dirs)
@@ -147,8 +152,6 @@ void LightView::draw(const Rect& dest, const Rect& src)
                     if(shade.floor != z) continue;
                     shade.floor = -1;
 
-                    float divValue = shade.islarge ? 1.8 : 1.2;
-
                     auto newPos = shade.pos - shadeBase.first;
                     auto size = shadeBase.second;
 
@@ -157,10 +160,10 @@ void LightView::draw(const Rect& dest, const Rect& src)
 
                     for(auto dir : shade.dirs) {
                         if(dir == Otc::South) {
-                            newHeight /= divValue;
+                            newHeight /= 1.8;
                             size.setHeight(newHeight);
                         } else if(dir == Otc::East) {
-                            newWidth /= divValue;
+                            newWidth /= 1.8;
                             size.setWidth(newWidth);
                         }
                     }

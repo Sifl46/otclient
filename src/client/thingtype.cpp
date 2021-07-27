@@ -434,7 +434,7 @@ void ThingType::unserializeOtml(const OTMLNodePtr& node)
     }
 }
 
-void ThingType::draw(const Point& dest, float scaleFactor, int layer, int xPattern, int yPattern, int zPattern, int animationPhase, TextureType textureType, Color color, int frameFlags, LightView* lightView)
+void ThingType::draw(const Point& dest, float scaleFactor, int layer, int xPattern, int yPattern, int zPattern, int animationPhase, TextureType textureType, Color color, bool isCovered, LightView* lightView)
 {
     if(m_null)
         return;
@@ -463,7 +463,7 @@ void ThingType::draw(const Point& dest, float scaleFactor, int layer, int xPatte
     const Rect screenRect(dest + (textureOffset - m_displacement - (m_size.toPoint() - Point(1)) * Otc::TILE_PIXELS) * scaleFactor,
                           textureRect.size() * scaleFactor);
 
-    if(frameFlags & Otc::FUpdateThing) {
+    if(!isCovered) {
         const bool useOpacity = m_opacity < 1.0f;
 
         if(useOpacity)
@@ -475,9 +475,10 @@ void ThingType::draw(const Point& dest, float scaleFactor, int layer, int xPatte
             g_drawPool.addTexturedRect(screenRect, texture, textureRect, color, dest);
     }
 
-    if(lightView && hasLight() && frameFlags & Otc::FUpdateLight) {
+    if(lightView && hasLight()) {
         const Light light = getLight();
-        if(light.intensity > 0) {
+        const uint8 minIntensity = isCovered ? 2 : 0;
+        if(light.intensity > minIntensity) {
             lightView->addLightSource(screenRect.center(), light);
         }
     }

@@ -63,12 +63,12 @@ public:
     Tile(const Position& position);
 
     void onAddVisibleTileList(const MapViewPtr& mapView);
-    void draw(const MapViewPtr& mapView, const Point& dest, float scaleFactor, int frameFlags, LightView* lightView = nullptr);
-    void drawGround(const MapViewPtr& mapView, const Point& dest, float scaleFactor, int frameFlags, LightView* lightView = nullptr);
-    void drawGroundBorder(const MapViewPtr& mapView, const Point& dest, float scaleFactor, int frameFlags, LightView* lightView = nullptr);
-    void drawBottom(const Point& dest, float scaleFactor, int frameFlags, LightView* lightView = nullptr);
-    void drawTop(const Point& dest, float scaleFactor, int frameFlags, LightView* lightView = nullptr);
-    void drawThing(const ThingPtr& thing, const Point& dest, float scaleFactor, bool animate, int frameFlag, LightView* lightView);
+    void draw(const MapViewPtr& mapView, const Point& dest, float scaleFactor, LightView* lightView = nullptr);
+    void drawGround(const MapViewPtr& mapView, const Point& dest, float scaleFactor, LightView* lightView = nullptr);
+    void drawGroundBorder(const MapViewPtr& mapView, const Point& dest, float scaleFactor, LightView* lightView = nullptr);
+    void drawBottom(const Point& dest, float scaleFactor, LightView* lightView = nullptr);
+    void drawTop(const Point& dest, float scaleFactor, LightView* lightView = nullptr);
+    void drawThing(const ThingPtr& thing, const Point& dest, float scaleFactor, bool animate, LightView* lightView);
 
     void clean();
 
@@ -190,7 +190,7 @@ private:
     };
 
     bool canRender(const bool drawViewportEdge, const Position& cameraPosition, const AwareRange viewPort, LightView* lightView);
-    void drawCreature(const Point& dest, float scaleFactor, int frameFlags, LightView* lightView = nullptr);
+    void drawCreature(const Point& dest, float scaleFactor, LightView* lightView = nullptr);
     bool checkForDetachableThing();
     void checkTranslucentLight();
 
