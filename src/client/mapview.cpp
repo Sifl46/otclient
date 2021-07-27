@@ -154,23 +154,41 @@ void MapView::drawFloor()
                     lightView->setFloor(nextFloor);
                     for(const auto& tile : m_cachedVisibleTiles[nextFloor].allGrounds) {
                         const auto& ground = tile->getGround();
-                        if(tile->isBorder() && (tile->hasWall() || tile->hasWallWalkable())) {
+                        if(ground && ground->isTopGround()) {
                             auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
-                            lightView->clearShade(pos2D);
-                        } else if(ground && ground->isTopGround()) {
-                            auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
-                            const auto currentPos = tile->getPosition();
-                            for(const auto& pos : currentPos.translatedToDirections({ Otc::South, Otc::East })) {
-                                const auto& nextDownTile = g_map.getTile(pos);
-                                if(nextDownTile && nextDownTile->hasGround() && !nextDownTile->isTopGround() && !(nextDownTile->isBorder() && nextDownTile->hasWall())) {
-                                    lightView->setShade(pos2D);
-                                    break;
+                            for(const auto pos : tile->getPosition().translatedToDirectionsEx({ Otc::South, Otc::East })) {
+                                if(const auto& nextDownTile = g_map.getTile(pos)) {
+                                    if(nextDownTile->isBorder() && nextDownTile->hasWallWalkable()) {
+                                        lightView->clearShade(pos2D);
+                                        break;
+                                    }
+                                    if(nextDownTile->isFullyOpaque() && !nextDownTile->isTopGround()) {
+                                        lightView->setShade(pos2D);
+                                    }
                                 }
                             }
 
                             pos2D -= m_tileSize;
                             lightView->setShade(pos2D);
-                        } else if(tile->isFullyOpaque()) {
+                        } else if(tile->isBorder() && (tile->hasWall() || tile->hasWallWalkable())) {
+                            uint8_t clear = 2;
+
+                            if(tile->hasWall()) {
+                                for(const auto pos : tile->getPosition().translatedToDirectionsEx({ Otc::South, Otc::East })) {
+                                    if(const auto& nextDownTile = g_map.getTile(pos)) {
+                                        if(nextDownTile->isFullyOpaque() && !nextDownTile->hasWallWalkable() || nextDownTile->isTopGround()) {
+                                            --clear;
+                                        }
+                                    }
+                                }
+                            }
+
+                            auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
+                            if(clear) {
+                                lightView->clearShade(pos2D);
+                            } else
+                                lightView->setShade(pos2D);
+                        } else                        if(tile->isFullyOpaque()) {
                             const auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
                             lightView->setShade(pos2D, tile->hasTallItems() || tile->hasWideItems(), tile->getBorderDirections());
                         }

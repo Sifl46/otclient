@@ -134,6 +134,23 @@ public:
         return positions;
     }
 
+    std::vector<Position> translatedToDirectionsEx(const std::vector<Otc::Direction>& dirs) const
+    {
+        std::vector<Position> positions;
+        if(!isValid())
+            return positions;
+
+        auto currentPos = *this;
+        for(auto dir : dirs) {
+            const Position pos = currentPos.translatedToDirection(dir);
+            if(!pos.isValid())
+                break;
+            positions.push_back(pos);
+        }
+
+        return positions;
+    }
+
     static bool isDiagonal(const Otc::Direction dir) { return dir == Otc::NorthWest || dir == Otc::NorthEast || dir == Otc::SouthWest || dir == Otc::SouthEast; };
 
     static double getAngleFromPositions(const Position& fromPos, const Position& toPos)

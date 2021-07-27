@@ -57,7 +57,7 @@ void Tile::onAddVisibleTileList(const MapViewPtr& /*mapView*/)
 
     const bool isOnlyGround = hasGround() && !hasBottomOrTopToDraw();
 
-    if(m_position == Position(1288, 983, 5)) {
+    if(m_position == Position(1290, 985, 5)) {
         if(true);
     }
 
