@@ -32,6 +32,7 @@
 struct ShadeBlock {
     int8 floor = -1;
     Point pos;
+    bool islarge;
     std::vector<Otc::Direction> dirs;
 };
 
@@ -53,7 +54,7 @@ public:
 
     void setGlobalLight(const Light& light) { m_globalLight = light; m_globalLightColor = Color::from8bit(m_globalLight.color, m_globalLight.intensity / static_cast<float>(UINT8_MAX)); }
     void setFloor(const uint8 floor) { m_currentFloor = floor; }
-    void setShade(const Point& point, const std::vector<Otc::Direction> dirs = std::vector<Otc::Direction>());
+    void setShade(const Point& point, bool islarge = false, const std::vector<Otc::Direction> dirs = std::vector<Otc::Direction>());
     void clearShade(const Point& point);
 
     const Light& getGlobalLight() const { return m_globalLight; }

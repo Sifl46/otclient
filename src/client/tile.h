@@ -116,6 +116,7 @@ public:
     bool hasTallItems() { return m_countFlag.hasTallItems; }
     bool hasWideItems() { return m_countFlag.hasWideItems; }
     bool hasWall() { return m_countFlag.hasWall; }
+    bool hasWallWalkable() { return m_countFlag.hasWallWalkable; }
     bool hasTranslucentLight() { return m_flags & TILESTATE_TRANSLUECENT_LIGHT; }
     bool mustHookSouth();
     bool mustHookEast();
@@ -176,6 +177,7 @@ private:
         int hasTallItems = 0;
         int hasWideItems = 0;
         int hasWall = 0;
+        int hasWallWalkable = 0;
         int hasHookEast = 0;
         int hasHookSouth = 0;
         int hasTopGround = 0;

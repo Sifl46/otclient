@@ -103,13 +103,14 @@ void LightView::addLightSource(const Point& pos, const Light& light)
     lights.push_back(LightSource{ pos , light.color, radius, light.brightness });
 }
 
-void LightView::setShade(const Point& point, const std::vector<Otc::Direction> dirs)
+void LightView::setShade(const Point& point, bool islarge, const std::vector<Otc::Direction> dirs)
 {
     size_t index = (m_mapView->m_drawDimension.width() * (point.y / m_mapView->m_tileSize)) + (point.x / m_mapView->m_tileSize);
     if(index >= m_shades.size()) return;
     auto& shade = m_shades[index];
     shade.floor = m_currentFloor;
     shade.pos = point;
+    shade.islarge = islarge;
     shade.dirs = dirs;
 }
 
@@ -146,24 +147,25 @@ void LightView::draw(const Rect& dest, const Rect& src)
                     if(shade.floor != z) continue;
                     shade.floor = -1;
 
-                    auto newPos = shade.pos;
-                    auto newBase = shadeBase;
+                    float divValue = shade.islarge ? 1.8 : 1.2;
 
-                    const auto size = Otc::TILE_PIXELS / 1.8;
+                    auto newPos = shade.pos - shadeBase.first;
+                    auto size = shadeBase.second;
+
+                    int newHeight = size.height();
+                    int newWidth = size.width();
+
                     for(auto dir : shade.dirs) {
-                        if(dir == Otc::North) {
-                        } else if(dir == Otc::South) {
-                            newPos.y -= size;
-                            newBase.first.y -= Otc::TILE_PIXELS / 1.3;
-                            newBase.second.setHeight(Otc::TILE_PIXELS / 1.1);
+                        if(dir == Otc::South) {
+                            newHeight /= divValue;
+                            size.setHeight(newHeight);
                         } else if(dir == Otc::East) {
-                            newPos.x -= size;
-                            /*newBase.first.x -= Otc::TILE_PIXELS;
-                            newBase.second.setWidth(size);*/
+                            newWidth /= divValue;
+                            size.setWidth(newWidth);
                         }
                     }
 
-                    g_drawPool.addRepeatedTexturedRect(Rect(newPos - newBase.first, newBase.second), m_shadeTexture, m_globalLightColor);
+                    g_drawPool.addRepeatedTexturedRect(Rect(newPos, size), m_shadeTexture, m_globalLightColor);
                 }
             }
         }

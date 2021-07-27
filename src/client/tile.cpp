@@ -41,7 +41,7 @@ Tile::Tile(const Position& position) :
     m_flags(0),
     m_houseId(0)
 {
-    for(auto dir : { Otc::South, Otc::East, Otc::SouthEast }) {
+    for(auto dir : { Otc::North, Otc::West, Otc::South, Otc::East }) {
         auto pos = position;
         m_positionsBorder.push_back(std::make_pair(dir, pos.translatedToDirection(dir)));
     }
@@ -57,14 +57,19 @@ void Tile::onAddVisibleTileList(const MapViewPtr& /*mapView*/)
 
     const bool isOnlyGround = hasGround() && !hasBottomOrTopToDraw();
 
-    for(const auto& pos : m_positionsBorder) {
-        const TilePtr& tile = g_map.getTile(pos.second);
-        if(!tile) {
-            if(pos.first == Otc::SouthEast && m_borderDirections.empty()) {
-                //m_borderDirections = { Otc::South, Otc::East };
-                break;
+    if(m_position == Position(1288, 983, 5)) {
+        if(true);
+    }
+
+    if((hasWall() || hasWallWalkable() || hasWideItems() || hasTallItems())) {
+        for(const auto& pos : m_positionsBorder) {
+            const TilePtr& tile = g_map.getTile(pos.second);
+            if(pos.first == Otc::North || pos.first == Otc::West) {
+                if(!tile || tile->hasWallWalkable())
+                    m_borderDirections.push_back(pos.first);
+            } else if(!tile || !tile->isFullyOpaque() || tile->hasWallWalkable()) {
+                m_borderDirections.push_back(pos.first);
             }
-            m_borderDirections.push_back(pos.first);
         }
     }
 }
@@ -843,14 +848,17 @@ void Tile::analyzeThing(const ThingPtr& thing, bool add)
 
     if(!thing->isItem()) return;
 
-    if(thing->getHeight() > 1)
+    if(thing->getHeight() > 1 && thing->isNotWalkable())
         m_countFlag.hasTallItems += value;
 
-    if(thing->getWidth() > 1)
+    if(thing->getWidth() > 1 && thing->isNotWalkable())
         m_countFlag.hasWideItems += value;
 
-    if(thing->getWidth() > 1 && thing->getHeight() > 1 && (thing->blockProjectile() || thing->getRealSize() >= Otc::TILE_PIXELS * 2))
+    if(thing->isOnBottom() && thing->getWidth() > 1 && thing->getHeight() > 1 && thing->isNotMoveable() && thing->isNotWalkable())
         m_countFlag.hasWall += value;
+
+    if(thing->isOnBottom() && thing->isNotMoveable() && !thing->isNotWalkable())
+        m_countFlag.hasWallWalkable += value;
 
     if(thing->isNotWalkable())
         m_countFlag.notWalkable += value;
