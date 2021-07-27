@@ -71,7 +71,7 @@ void LightView::generateLightTexture()
 
 void LightView::generateShadeTexture()
 {
-    const uint16 diameter = 6;
+    const uint16 diameter = 8;
     const ImagePtr image = ImagePtr(new Image(Size(diameter, diameter)));
     for(int_fast16_t x = -1; ++x < diameter;) {
         for(int_fast16_t y = -1; ++y < diameter;) {
@@ -143,7 +143,7 @@ void LightView::draw(const Rect& dest, const Rect& src)
 
     g_drawPool.use(m_pool, dest, src);
     g_drawPool.addFilledRect(m_mapView->m_rectDimension, m_globalLightColor);
-    const auto& shadeBase = std::make_pair<Point, Size>(Point(m_mapView->getTileSize() / 1.8), Size(m_mapView->getTileSize() * 2));
+    const auto& shadeBase = std::make_pair<Point, Size>(Point(m_mapView->getTileSize() / 2.8), Size(m_mapView->getTileSize() * 1.55));
     for(int_fast8_t z = m_mapView->m_floorMax; z >= m_mapView->m_floorMin; --z) {
         g_drawPool.startPosition();
         {
