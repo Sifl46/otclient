@@ -153,14 +153,22 @@ void MapView::drawFloor()
                 if(nextFloor >= m_floorMin) {
                     lightView->setFloor(nextFloor);
                     for(const auto& tile : m_cachedVisibleTiles[nextFloor].allGrounds) {
-                        const auto& ground = tile->getGround();
-                        if(ground && !ground->isTranslucent()) {
-                            auto pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
-                            if(ground->isTopGround()) {
+                        if(tile->getPosition() == Position(936, 1139, 6)) {
+                            if(true);
+                        }
+
+                        const bool isBorderWithWall = tile->isBorder() && tile->hasWall();
+                        if(tile->isFullyOpaque()) {
+                            const auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
+                            lightView->setShade(pos2D, tile->getBorderDirections());
+                        } else {
+                            const auto& ground = tile->getGround();
+                            if(ground && ground->isTopGround()) {
+                                auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
                                 const auto currentPos = tile->getPosition();
                                 for(const auto& pos : currentPos.translatedToDirections({ Otc::South, Otc::East })) {
                                     const auto& nextDownTile = g_map.getTile(pos);
-                                    if(nextDownTile && nextDownTile->hasGround() && !nextDownTile->isTopGround()) {
+                                    if(nextDownTile && nextDownTile->hasGround() && !nextDownTile->isTopGround() && !(nextDownTile->isBorder() && nextDownTile->hasWall())) {
                                         lightView->setShade(pos2D);
                                         break;
                                     }
@@ -168,13 +176,7 @@ void MapView::drawFloor()
 
                                 pos2D -= m_tileSize;
                                 lightView->setShade(pos2D);
-                                continue;
-                            } else if(tile->isBorder() && tile->hasWall()) {
-                                lightView->clearShade(pos2D);
-                                continue;
                             }
-
-                            lightView->setShade(pos2D, tile->hasTallItems() || tile->hasWideItems() ? tile->getBorderDirections() : std::vector<Otc::Direction>());
                         }
                     }
                 }

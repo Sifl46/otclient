@@ -41,7 +41,7 @@ Tile::Tile(const Position& position) :
     m_flags(0),
     m_houseId(0)
 {
-    for(auto dir : { Otc::South, Otc::SouthEast, Otc::East }) {
+    for(auto dir : { Otc::South, Otc::East, Otc::SouthEast }) {
         auto pos = position;
         m_positionsBorder.push_back(std::make_pair(dir, pos.translatedToDirection(dir)));
     }
@@ -53,13 +53,18 @@ Tile::Tile(const Position& position) :
 
 void Tile::onAddVisibleTileList(const MapViewPtr& /*mapView*/)
 {
-    uint8 cntBorder = 0;
     m_borderDirections.clear();
+
+    const bool isOnlyGround = hasGround() && !hasBottomOrTopToDraw();
+
     for(const auto& pos : m_positionsBorder) {
         const TilePtr& tile = g_map.getTile(pos.second);
-        if(!tile || (!tile->isFullyOpaque() && tile->isWalkable(true))) {
+        if(!tile) {
+            if(pos.first == Otc::SouthEast && m_borderDirections.empty()) {
+                //m_borderDirections = { Otc::South, Otc::East };
+                break;
+            }
             m_borderDirections.push_back(pos.first);
-            ++cntBorder;
         }
     }
 }
@@ -844,7 +849,7 @@ void Tile::analyzeThing(const ThingPtr& thing, bool add)
     if(thing->getWidth() > 1)
         m_countFlag.hasWideItems += value;
 
-    if(thing->getWidth() > 1 && thing->getHeight() > 1)
+    if(thing->getWidth() > 1 && thing->getHeight() > 1 && (thing->blockProjectile() || thing->getRealSize() >= Otc::TILE_PIXELS * 2))
         m_countFlag.hasWall += value;
 
     if(thing->isNotWalkable())

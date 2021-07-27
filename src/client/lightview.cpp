@@ -147,15 +147,23 @@ void LightView::draw(const Rect& dest, const Rect& src)
                     shade.floor = -1;
 
                     auto newPos = shade.pos;
+                    auto newBase = shadeBase;
 
+                    const auto size = Otc::TILE_PIXELS / 1.8;
                     for(auto dir : shade.dirs) {
-                        if(dir == Otc::South)
-                            newPos.y -= Otc::TILE_PIXELS / 1.6;
-                        else if(dir == Otc::East)
-                            newPos.x -= Otc::TILE_PIXELS / 1.6;
+                        if(dir == Otc::North) {
+                        } else if(dir == Otc::South) {
+                            newPos.y -= size;
+                            newBase.first.y -= Otc::TILE_PIXELS / 1.3;
+                            newBase.second.setHeight(Otc::TILE_PIXELS / 1.1);
+                        } else if(dir == Otc::East) {
+                            newPos.x -= size;
+                            /*newBase.first.x -= Otc::TILE_PIXELS;
+                            newBase.second.setWidth(size);*/
+                        }
                     }
 
-                    g_drawPool.addRepeatedTexturedRect(Rect(newPos - shadeBase.first, shadeBase.second), m_shadeTexture, m_globalLightColor);
+                    g_drawPool.addRepeatedTexturedRect(Rect(newPos - newBase.first, newBase.second), m_shadeTexture, m_globalLightColor);
                 }
             }
         }
