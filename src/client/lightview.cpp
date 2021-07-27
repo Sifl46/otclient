@@ -143,7 +143,7 @@ void LightView::draw(const Rect& dest, const Rect& src)
 
     g_drawPool.use(m_pool, dest, src);
     g_drawPool.addFilledRect(m_mapView->m_rectDimension, m_globalLightColor);
-    const auto& shadeBase = std::make_pair<Point, Size>(Point(m_mapView->getTileSize() / 2.8), Size(m_mapView->getTileSize() * 1.55));
+    const auto& shadeBase = std::make_pair<Point, Size>(Point(m_mapView->getTileSize() / 3), Size(m_mapView->getTileSize() * 1.55));
     for(int_fast8_t z = m_mapView->m_floorMax; z >= m_mapView->m_floorMin; --z) {
         g_drawPool.startPosition();
         {
@@ -160,10 +160,12 @@ void LightView::draw(const Rect& dest, const Rect& src)
 
                     for(auto dir : shade.dirs) {
                         if(dir == Otc::South) {
-                            newHeight /= 1.8;
+                            newHeight /= 2;
+                            newPos.y += newHeight / 5;
                             size.setHeight(newHeight);
                         } else if(dir == Otc::East) {
-                            newWidth /= 1.8;
+                            newWidth /= 2;
+                            newPos.x += newWidth / 5;
                             size.setWidth(newWidth);
                         }
                     }
