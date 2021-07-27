@@ -176,13 +176,7 @@ void MapView::drawFloor()
 
                                 pos2D -= m_tileSize;
                                 lightView->setShade(pos2D);
-                                continue;
-                            } else if(tile->isBorder() && tile->hasWall()) {
-                                lightView->clearShade(pos2D);
-                                continue;
                             }
-
-                            lightView->setShade(pos2D, tile->hasTallItems() || tile->hasWideItems() ? tile->getBorderDirections() : std::vector<Otc::Direction>());
                         }
                     }
                 }
