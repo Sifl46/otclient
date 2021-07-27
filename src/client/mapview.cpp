@@ -377,9 +377,8 @@ void MapView::updateVisibleTilesCache()
                     if(tile->hasGround())
                         floor.grounds.push_back(tile);
 
-                    if(isDrawingLights()) {
+                    if(isDrawingLights() && (tile->isFullyOpaque() || tile->getGround() && tile->getGround()->isTopGround()))
                         floor.allGrounds.push_back(tile);
-                    }
 
                     if(tile->hasGroundBorderToDraw())
                         floor.borders.push_back(tile);

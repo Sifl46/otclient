@@ -160,8 +160,8 @@ public:
 
 private:
     struct MapList {
-        std::vector<TilePtr> grounds, allGrounds, borders, bottomTops;
-        void clear() { grounds.clear(); allGrounds.clear(); borders.clear(); bottomTops.clear(); }
+        std::vector<TilePtr> grounds, allOpaque, borders, bottomTops;
+        void clear() { grounds.clear(); allOpaque.clear(); borders.clear(); bottomTops.clear(); }
     };
 
     struct Pools {
