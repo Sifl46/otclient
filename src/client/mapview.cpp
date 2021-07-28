@@ -152,7 +152,7 @@ void MapView::drawFloor()
                 const int8 nextFloor = z - 1;
                 if(nextFloor >= m_floorMin) {
                     lightView->setFloor(nextFloor);
-                    for(const auto& tile : m_cachedVisibleTiles[nextFloor].allGrounds) {
+                    for(const auto& tile : m_cachedVisibleTiles[nextFloor].allOpaque) {
                         const auto& ground = tile->getGround();
                         if(ground && ground->isTopGround()) {
                             auto& pos2D = transformPositionTo2D(tile->getPosition(), cameraPosition);
@@ -378,7 +378,7 @@ void MapView::updateVisibleTilesCache()
                         floor.grounds.push_back(tile);
 
                     if(isDrawingLights() && (tile->isFullyOpaque() || tile->getGround() && tile->getGround()->isTopGround()))
-                        floor.allGrounds.push_back(tile);
+                        floor.allOpaque.push_back(tile);
 
                     if(tile->hasGroundBorderToDraw())
                         floor.borders.push_back(tile);
